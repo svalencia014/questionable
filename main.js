@@ -14,12 +14,8 @@ const Theme = new Audio(
 const BlackSquareTheme = new Audio(
     "https://codehs.com/uploads/66c5a8add52d0a2422190b248cf1355d"
 );
-const MenuTheme = new Audio(
-    "https://codehs.com/uploads/c433e1ffe02ef1e0f5168fd9416f23ec"
-);
-const RedPlayer = new WebImage(
-    "https://codehs.com/uploads/9072c362a186c0a45486b3842328428f"
-);
+const RedPlayer = new WebImage("https://codehs.com/uploads/9072c362a186c0a45486b3842328428f");
+const DiceText = new Text("", "20pt Arial");
 
 let CurrentPlayer = ["Red", "Blue", "Green", "Yellow"]
 let PlayerNumber = 0;
@@ -38,14 +34,10 @@ const Spaces = [
 
 function main() {
     setupGame();
+    add(text);
     let activePlayer = CurrentPlayer[0];
     let moves = 0;
-    while (true) {
-        let txt = new Text(`${activePlayer} rolled: ${rollDice()}`, "20pt Arial");
-        txt.setPosition(25, 155);
-        txt.setColor(Color.WHITE);
-        add(txt);
-    }
+    
 }
 
 function setNextPlayer() {
