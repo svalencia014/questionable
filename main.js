@@ -10,8 +10,6 @@ function remove(shape) {
 //* END DO NOT PUT ON CODEHS
 //dont look at this mr yeoman
 //or you either other teachers
-// balls america
-
 const Theme = new Audio(
     "https://codehs.com/uploads/fcd293c3d1c92b0a954da56bb3d4f6"
 );
@@ -30,8 +28,8 @@ const GreenPlayerIdle = new WebImage("https://codehs.com/uploads/4517728ad2a864e
 // Yellow Player 4
 const YellowPlayerIdle = new WebImage("https://codehs.com/uploads/d7e68d33d5d78a34924059a036ac363b");
 
-
-const DiceText = new Text("", "20pt Arial");
+const DiceText = new Text("", "10pt Arial");
+const EnterText = new Text("Press 'n' to continue", "10pt Arial"); //OG was 'enter'
 
 let CurrentPlayer = ["Red", "Blue", "Green", "Yellow"]
 let activePlayer = "";
@@ -56,8 +54,7 @@ async function main() {
     activePlayer = CurrentPlayer[PlayerNumber];
     console.log(`The current player is ${activePlayer}`);
     DiceText.setText(`Press 'r' to roll for ${activePlayer}`);
-    DiceText.setFont("10pt Arial");
-    keyDownMethod(keyDownMethods)
+    keyDownMethod(keyDownMethods);
 }
 
 function keyDownMethods(e) {
@@ -65,17 +62,39 @@ function keyDownMethods(e) {
         rollDice();
         switch(PlayerNumber) {
             case 0: {
-                move(RedPlayerIdle, moves)
+                move(RedPlayerIdle, moves);
+                break;
             }
-            case 1: move(BluePlayerIdle, moves)
-            case 2: move(GreenPlayerIdle, moves)
-            case 3: move(YellowPlayerIdle, moves)
+            case 1: {
+                move(BluePlayerIdle, moves);
+                break;
+            }
+            case 2:  {
+                move(GreenPlayerIdle, moves)
+                break;
+            }
+            case 3: { 
+                move(YellowPlayerIdle, moves)
+                break;
+            }
         }
+    }
+    if (e.key == 'n' && hasRolled == true) {
+        remove(EnterText);
+        setNextPlayer();
+        activePlayer = CurrentPlayer[PlayerNumber];
+        console.log(`The current player is ${activePlayer}`);
+        DiceText.setText(`Press 'r' to roll for ${activePlayer}`);
     }
 }
 
 function move(player, spaces) {
-    player.move(spaces, 0)
+    let currentLocation = player.getX();
+    let dx = spaces*45;
+    if ((currentLocation + dx) > 315) {
+        dx = 0;
+    } 
+    player.move(dx, 0)
 }
 
 function duel() {
@@ -83,12 +102,11 @@ function duel() {
 }
 
 function setNextPlayer() {
-    if (PlayerNumber == 4) {
+    if (PlayerNumber == 3) {
         PlayerNumber = 0;
     } else {
         PlayerNumber++
     }
-    
     hasRolled = !hasRolled
 }
 
@@ -96,7 +114,9 @@ function setupGame() {
     //setTimer(() => { MenuTheme.play() }, 85, "", "Music Timer")
     //* DRAW GRID
     DiceText.setPosition(25, 155),
+    EnterText.setPosition(25, 175);
     DiceText.setColor(Color.WHITE);
+    EnterText.setColor(Color.WHITE);
     add(DiceText);
     Color.BLUE = new Color(46, 152, 209);
     Color.PURPLE = new Color(102, 90, 231);
@@ -125,7 +145,6 @@ function setupGame() {
 }
 
 function drawBoard() {
-    
     // Roundabout
     const roundAbout = new WebImage("https://codehs.com/uploads/e00286aeb2d6b739a08e9a0b67a53168")
     setSize(355, 700);
@@ -206,7 +225,8 @@ function drawSquare(color, x, y, text = "", font = "") {
 function rollDice() {
     moves = Randomizer.nextInt(1, 6);
     hasRolled = !hasRolled;
-    DiceText.setText(`${activePlayer} rolled a ${moves}`)
+    DiceText.setText(`${activePlayer} rolled a ${moves}!`)
+    add(EnterText);
 }
 
 main();
