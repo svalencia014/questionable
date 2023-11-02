@@ -8,17 +8,36 @@ function remove(shape) {
   graphics.remove(shape);
 }
 //* END DO NOT PUT ON CODEHS
+//dont look at this mr yeoman
+//or you either other teachers
+// balls america
+
 const Theme = new Audio(
     "https://codehs.com/uploads/fcd293c3d1c92b0a954da56bb3d4f6"
 );
 const BlackSquareTheme = new Audio(
     "https://codehs.com/uploads/66c5a8add52d0a2422190b248cf1355d"
 );
-const RedPlayer = new WebImage("https://codehs.com/uploads/9072c362a186c0a45486b3842328428f");
+
+// Player Pieces 
+
+// Red Player 1
+const RedPlayerIdle = new WebImage("https://codehs.com/uploads/9072c362a186c0a45486b3842328428f");
+// Blue Player 2
+const BluePlayerIdle = new WebImage("https://codehs.com/uploads/13ac08cc5339fac0e3eb87ec49367038");
+// Green Player 3
+const GreenPlayerIdle = new WebImage("https://codehs.com/uploads/4517728ad2a864e61d5fd8fd9fd7ceb4");
+// Yellow Player 4
+const YellowPlayerIdle = new WebImage("https://codehs.com/uploads/d7e68d33d5d78a34924059a036ac363b");
+
+
 const DiceText = new Text("", "20pt Arial");
 
 let CurrentPlayer = ["Red", "Blue", "Green", "Yellow"]
+let activePlayer = "";
 let PlayerNumber = 0;
+let moves = 0;
+let hasRolled = false;
 
 const Spaces = [
     ["start", "blue", "green", "purple", "black", "yellow", "white", "white"],
@@ -32,26 +51,53 @@ const Spaces = [
     ["black", "orange", "white", "black", "purple", "red", "blue"]
 ]
 
-function main() {
+async function main() {
     setupGame();
-    add(text);
-    let activePlayer = CurrentPlayer[0];
-    let moves = 0;
+    activePlayer = CurrentPlayer[PlayerNumber];
+    console.log(`The current player is ${activePlayer}`);
+    DiceText.setText(`Press 'r' to roll for ${activePlayer}`);
+    DiceText.setFont("10pt Arial");
+    keyDownMethod(keyDownMethods)
+}
+
+function keyDownMethods(e) {
+    if(e.key == 'r' && hasRolled == false) {
+        rollDice();
+        switch(PlayerNumber) {
+            case 0: {
+                move(RedPlayerIdle, moves)
+            }
+            case 1: move(BluePlayerIdle, moves)
+            case 2: move(GreenPlayerIdle, moves)
+            case 3: move(YellowPlayerIdle, moves)
+        }
+    }
+}
+
+function move(player, spaces) {
+    player.move(spaces, 0)
+}
+
+function duel() {
     
 }
 
 function setNextPlayer() {
     if (PlayerNumber == 4) {
         PlayerNumber = 0;
+    } else {
+        PlayerNumber++
     }
-    console.log(CurrentPlayer[PlayerNumber])
-    PlayerNumber++
+    
+    hasRolled = !hasRolled
 }
 
 function setupGame() {
     //setTimer(() => { MenuTheme.play() }, 85, "", "Music Timer")
-    //BlackSquareTheme.play();
     //* DRAW GRID
+    DiceText.setPosition(25, 155),
+    DiceText.setColor(Color.WHITE);
+    add(DiceText);
     Color.BLUE = new Color(46, 152, 209);
     Color.PURPLE = new Color(102, 90, 231);
     Color.GREEN = new Color(136, 227, 110);
@@ -59,15 +105,31 @@ function setupGame() {
     Color.ORANGE = new Color(255, 94, 31);
     Color.RED = new Color(255, 41, 33);
     drawBoard();
-    RedPlayer.setPosition(0, 0);
-    RedPlayer.setSize(20, 20);
-    add(RedPlayer);
+    
+    //* Create Player Pieces
+    RedPlayerIdle.setPosition(0, 10);
+    RedPlayerIdle.setSize(20, 20);
+    add(RedPlayerIdle);
+    
+    BluePlayerIdle.setPosition(0, 20);
+    BluePlayerIdle.setSize(20, 20);
+    add(BluePlayerIdle);
+    
+    GreenPlayerIdle.setPosition(0, 30);
+    GreenPlayerIdle.setSize(20, 20);
+    add(GreenPlayerIdle);
+    
+    YellowPlayerIdle.setPosition(0, 40);
+    YellowPlayerIdle.setSize(20, 20);
+    add(YellowPlayerIdle);
 }
 
 function drawBoard() {
-    // Draw start space
+    
+    // Roundabout
+    const roundAbout = new WebImage("https://codehs.com/uploads/e00286aeb2d6b739a08e9a0b67a53168")
     setSize(355, 700);
-    drawSquare(Color.WHITE, 0,0, "START", "10pt Arial");
+    drawSquare(Color.WHITE, 0,0, "START", "10pt Arial"); //START SQUARE
     drawSquare(Color.BLUE, 45, 0);
     drawSquare(Color.GREEN, 90, 0);
     drawSquare(Color.PURPLE, 135, 0);
@@ -92,6 +154,12 @@ function drawBoard() {
     drawSquare(Color.WHITE, 315, 468);
      
     drawSquare(Color.PURPLE, 225, 234);
+ 
+ // create roundabout for the board
+    roundAbout.setPosition(180, 235);
+    roundAbout.setSize(40, 70);
+    add(roundAbout);
+    
     drawSquare(Color.BLUE, 135, 234);
     drawSquare(Color.RED, 90, 234);
     drawSquare(Color.YELLOW, 45, 234);
@@ -128,7 +196,7 @@ function drawSquare(color, x, y, text = "", font = "") {
     add(rect);
     if (text != "") {
         let txt = new Text(text, font);
-        txt.setPosition(x + 5, y + 40);
+        txt.setPosition(x + 0, y + 40);
         txt.setRotation(90)
         txt.setColor(Color.BLACK);
         add(txt);
@@ -136,8 +204,10 @@ function drawSquare(color, x, y, text = "", font = "") {
 }
 
 function rollDice() {
-    let num = Randomizer.nextInt(1, 6);
-    return num;
+    moves = Randomizer.nextInt(1, 6);
+    hasRolled = !hasRolled;
+    DiceText.setText(`${activePlayer} rolled a ${moves}`)
 }
 
 main();
+//monkey bust
