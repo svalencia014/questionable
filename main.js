@@ -8,25 +8,40 @@ function remove(shape) {
   graphics.remove(shape);
 }
 //* END DO NOT PUT ON CODEHS
-//dont look at this mr yeoman
-//or you either other teachers
+
+/*
+function checkGreenSquare(currentPosition) {
+  // Get the color of the square at the current position
+  const squareColor = getSquareColor(currentPosition);
+
+  // Check if the square is green
+  if (squareColor === Color.GREEN) {
+    // Move the player two spaces forward
+    move(Player) += 2;
+  }
+
+  return currentPosition;
+}*/
+
 const Theme = new Audio(
     "https://codehs.com/uploads/fcd293c3d1c92b0a954da56bb3d4f6"
 );
 const BlackSquareTheme = new Audio(
     "https://codehs.com/uploads/66c5a8add52d0a2422190b248cf1355d"
 );
+//TODO: Add each space as an object { x, y, color }
+const rowStart = [[0,0],[225,78],[225,156],[225,234],[0,312], [0,390], [0, 468], [0, 546], [45, 624]]
 
 // Player Pieces 
 
 // Red Player 1
-const RedPlayerIdle = new WebImage("https://codehs.com/uploads/9072c362a186c0a45486b3842328428f");
+const RedPlayer = new WebImage("https://codehs.com/uploads/9072c362a186c0a45486b3842328428f");
 // Blue Player 2
-const BluePlayerIdle = new WebImage("https://codehs.com/uploads/13ac08cc5339fac0e3eb87ec49367038");
+const BluePlayer = new WebImage("https://codehs.com/uploads/13ac08cc5339fac0e3eb87ec49367038");
 // Green Player 3
-const GreenPlayerIdle = new WebImage("https://codehs.com/uploads/4517728ad2a864e61d5fd8fd9fd7ceb4");
+const GreenPlayer = new WebImage("https://codehs.com/uploads/4517728ad2a864e61d5fd8fd9fd7ceb4");
 // Yellow Player 4
-const YellowPlayerIdle = new WebImage("https://codehs.com/uploads/d7e68d33d5d78a34924059a036ac363b");
+const YellowPlayer = new WebImage("https://codehs.com/uploads/d7e68d33d5d78a34924059a036ac363b");
 
 const DiceText = new Text("", "10pt Arial");
 const EnterText = new Text("Press 'n' to continue", "10pt Arial"); //OG was 'enter'
@@ -89,12 +104,16 @@ function keyDownMethods(e) {
 }
 
 function move(player, spaces) {
-    let currentLocation = player.getX();
+    let currentX = player.getX();
     let dx = spaces*45;
-    if ((currentLocation + dx) > 315) {
-        dx = 0;
+    let dy = 0;
+    if ((currentX + dx) > 315) {
+        player.row++
+        dx = rowStart[player.row][0] - currentX;
+        dy = rowStart[player.row][1];
+        console.log(`${dx}, ${dy}`)
     } 
-    player.move(dx, 0)
+    player.move(dx, dy)
 }
 
 function duel() {
@@ -127,25 +146,28 @@ function setupGame() {
     drawBoard();
     
     //* Create Player Pieces
-    RedPlayerIdle.setPosition(0, 10);
-    RedPlayerIdle.setSize(20, 20);
-    add(RedPlayerIdle);
+    RedPlayer.setPosition(0, 10);
+    RedPlayer.setSize(20, 20);
+    RedPlayer.row = 0;
+    add(RedPlayer);
     
-    BluePlayerIdle.setPosition(0, 20);
-    BluePlayerIdle.setSize(20, 20);
-    add(BluePlayerIdle);
+    BluePlayer.setPosition(0, 20);
+    BluePlayer.setSize(20, 20);
+    BluePlayer.row = 0;
+    add(BluePlayer);
     
-    GreenPlayerIdle.setPosition(0, 30);
-    GreenPlayerIdle.setSize(20, 20);
-    add(GreenPlayerIdle);
+    GreenPlayer.setPosition(0, 30);
+    GreenPlayer.setSize(20, 20);
+    GreenPlayer.row = 0;
+    add(GreenPlayer);
     
-    YellowPlayerIdle.setPosition(0, 40);
-    YellowPlayerIdle.setSize(20, 20);
-    add(YellowPlayerIdle);
+    YellowPlayer.setPosition(0, 40);
+    YellowPlayer.setSize(20, 20);
+    YellowPlayer.row = 0;
+    add(YellowPlayer);
 }
 
 function drawBoard() {
-    // Roundabout
     const roundAbout = new WebImage("https://codehs.com/uploads/e00286aeb2d6b739a08e9a0b67a53168")
     setSize(355, 700);
     drawSquare(Color.WHITE, 0,0, "START", "10pt Arial"); //START SQUARE
@@ -160,9 +182,11 @@ function drawBoard() {
     drawSquare(Color.BLACK, 225, 78);
     drawSquare(Color.ORANGE, 270, 78);
     drawSquare(Color.GREEN, 315, 78);
+    
     drawSquare(Color.GREEN, 225, 156);
     drawSquare(Color.WHITE, 270, 156);
     drawSquare(Color.WHITE, 315, 156);
+    
     drawSquare(Color.WHITE, 270, 234);
     drawSquare(Color.WHITE, 270, 390);
     drawSquare(Color.WHITE, 270, 312);
@@ -171,10 +195,9 @@ function drawBoard() {
     drawSquare(Color.WHITE, 315, 390);
     drawSquare(Color.WHITE, 315, 312);
     drawSquare(Color.WHITE, 315, 468);
-     
     drawSquare(Color.PURPLE, 225, 234);
  
- // create roundabout for the board
+    // create roundabout for the board
     roundAbout.setPosition(180, 235);
     roundAbout.setSize(40, 70);
     add(roundAbout);
@@ -227,7 +250,6 @@ function rollDice() {
     hasRolled = !hasRolled;
     DiceText.setText(`${activePlayer} rolled a ${moves}!`)
     add(EnterText);
-}
+} 
 
 main();
-//monkey bust
