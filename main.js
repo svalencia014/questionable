@@ -8,8 +8,44 @@ function remove(shape) {
   graphics.remove(shape);
 }
 //* END DO NOT PUT ON CODEHS
-
 /*
+// Create a variable to store the person who landed on the square
+var personOnSquare;
+
+// Create a variable to store the opponent who was chosen
+var opponent;
+
+// Create a variable to store the die roll of the first person
+var firstRoll;
+
+// Create a variable to store the die roll of the second person
+var secondRoll;
+
+// Prompt the person who landed on the square to choose an opponent
+if checkSpaceType(purple)personOnSquare = prompt("Choose an opponent: ");
+
+// Get the die roll of the first person
+firstRoll = Math.floor(Math.random() * 6) + 1;
+
+// Get the die roll of the second person
+secondRoll = Math.floor(Math.random() * 6) + 1;
+
+// Compare the die rolls to see who wins the duel
+if (firstRoll > secondRoll) {
+   The first person wins the duel
+  alert("The first person wins the duel and gets to move forward two spaces.");
+   Move the first person forward two spaces
+   ...
+} else if (firstRoll < secondRoll) {
+   The second person wins the duel
+  alert("The second person wins the duel and gets to move forward two spaces.");
+   Move the second person forward two spaces
+   ...
+} else {
+   The die rolls are tied
+  alert("The die rolls are tied, so the duel is a draw.");
+}
+
 function checkGreenSquare(currentPosition) {
   // Get the color of the square at the current position
   const squareColor = getSquareColor(currentPosition);
@@ -29,10 +65,10 @@ const Theme = new Audio(
 const BlackSquareTheme = new Audio(
     "https://codehs.com/uploads/66c5a8add52d0a2422190b248cf1355d"
 );
-//TODO: Add each space as an object { x, y, color }
-const spaces = [
+//{ x, y, type }
+const Spaces = [
     [
-        {x:0,y:0,type:"white"},
+        {x:0,y:0,type:"start"},
         {x:45,y:0,type:"blue"},
         {x:90,y:0,type:"green"},
         {x:135,y:0,type:"purple"},
@@ -119,18 +155,6 @@ let PlayerNumber = 0;
 let moves = 0;
 let hasRolled = false;
 
-const Spaces = [
-    ["start", "blue", "green", "purple", "black", "yellow", "white", "white"],
-    ["black", "orange", "green"],
-    ["green", "white", "white"],
-    ["white", "yellow", "red", "blue", "roundabout", "purple", "white", "red"],
-    ["blue", "black", "white", "white"],
-    ["purple", "orange", "white", "white"],
-    ["purple", "white", "green", "black", "yellow", "black", "red", "white"],
-    ["end", "white", "yellow"],
-    ["black", "orange", "white", "black", "purple", "red", "blue"]
-]
-
 async function main() {
     setupGame();
     activePlayer = CurrentPlayer[PlayerNumber];
@@ -144,19 +168,19 @@ function keyDownMethods(e) {
         rollDice();
         switch(PlayerNumber) {
             case 0: {
-                move(RedPlayerIdle, moves);
+                move(RedPlayer, moves);
                 break;
             }
             case 1: {
-                move(BluePlayerIdle, moves);
+                move(BluePlayer, moves);
                 break;
             }
             case 2:  {
-                move(GreenPlayerIdle, moves)
+                move(GreenPlayer, moves)
                 break;
             }
             case 3: { 
-                move(YellowPlayerIdle, moves)
+                move(YellowPlayer, moves)
                 break;
             }
         }
@@ -171,20 +195,62 @@ function keyDownMethods(e) {
 }
 
 function move(player, spaces) {
-    let currentX = player.getX();
-    let dx = spaces*45;
-    let dy = 0;
-    if ((currentX + dx) > 315) {
-        player.row++
-        dx = rowStart[player.row][0] - currentX;
-        dy = rowStart[player.row][1];
-        console.log(`${dx}, ${dy}`)
-    } 
-    player.move(dx, dy)
+    let currentSpace = player.currentSpace;
+    let newSpace = [player.currentSpace[0], player.currentSpace[1] + spaces];
+    let spaceExists = indexExists(newSpace[0], newSpace[1])
+    console.log(`Space Exists? ${spaceExists}`);
+    if (!spaceExists) {
+        let dx = getSpace(newSpace).x - player.spaceObj.x;
+        let dy = 0;
+        player.move(dx, dy)
+        player.currentSpace = newSpace;
+        player.spaceObj = getSpace(newSpace);
+        checkSpaceType(newSpace.type);
+    }
+    console.log(`${indexExists(newSpace[0], newSpace[1])}`);
 }
 
-function duel() {
-    
+function checkSpaceType(type) {
+    switch(type) {
+        case "purple": {
+            //duel square
+            break;
+        }
+        
+        case "green": {
+            //+2 spaces
+            break;
+        }
+        
+        case "blue": {
+            //nearest blue
+            break;
+        }
+        
+        case "yellow": {
+            //nearest yellow
+            break;
+        }
+        
+        case "red": {
+            //challenge +1 space
+            break;
+        }
+        
+        case "orange": {
+            //skip next turn
+            break;
+        }
+        
+        case "black": {
+            //challenge card
+        }
+        
+        case "roundabout": {
+            //Sam R does logic for this
+            
+        }
+    }    
 }
 
 function setNextPlayer() {
@@ -213,25 +279,22 @@ function setupGame() {
     drawBoard();
     
     //* Create Player Pieces
-    RedPlayer.setPosition(0, 10);
-    RedPlayer.setSize(20, 20);
-    RedPlayer.row = 0;
-    add(RedPlayer);
-    
-    BluePlayer.setPosition(0, 20);
-    BluePlayer.setSize(20, 20);
-    BluePlayer.row = 0;
-    add(BluePlayer);
-    
-    GreenPlayer.setPosition(0, 30);
-    GreenPlayer.setSize(20, 20);
-    GreenPlayer.row = 0;
-    add(GreenPlayer);
-    
-    YellowPlayer.setPosition(0, 40);
-    YellowPlayer.setSize(20, 20);
-    YellowPlayer.row = 0;
-    add(YellowPlayer);
+    setupPlayer(RedPlayer);
+    setupPlayer(BluePlayer, 15);
+    setupPlayer(GreenPlayer, 30);
+    setupPlayer(YellowPlayer, 45);
+}
+
+function setupPlayer(player, offset = 0) {
+    player.currentSpace = [0,0];
+    player.spaceObj = getSpace(player.currentSpace)
+    player.setPosition(RedPlayer.spaceObj.x,RedPlayer.spaceObj.y + offset);
+    player.setSize(20, 20);
+    add(player);
+}
+
+function getSpace(location) {
+    return Spaces[location[0]][location[1]]
 }
 
 function drawBoard() {
@@ -318,5 +381,15 @@ function rollDice() {
     DiceText.setText(`${activePlayer} rolled a ${moves}!`)
     add(EnterText);
 } 
+
+function indexExists(row, column) {
+    console.log(row, column)
+    return (
+        row < 0 || 
+        row >= Spaces.length ||
+        column < 0 ||
+        column >= Spaces[row].length
+    )
+}
 
 main();
