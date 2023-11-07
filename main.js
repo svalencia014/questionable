@@ -30,7 +30,74 @@ const BlackSquareTheme = new Audio(
     "https://codehs.com/uploads/66c5a8add52d0a2422190b248cf1355d"
 );
 //TODO: Add each space as an object { x, y, color }
-const rowStart = [[0,0],[225,78],[225,156],[225,234],[0,312], [0,390], [0, 468], [0, 546], [45, 624]]
+const spaces = [
+    [
+        {x:0,y:0,type:"white"},
+        {x:45,y:0,type:"blue"},
+        {x:90,y:0,type:"green"},
+        {x:135,y:0,type:"purple"},
+        {x:180,y:0,type:"black"},
+        {x:225,y:0,type:"yellow"},
+        {x:270,y:0,type:"white"},
+        {x:315,y:0,type:"white"}
+    ],
+    [
+        {x:225,y:78,type:"black"},
+        {x:270,y:78,type:"orange"},
+        {x:315,y:78,type:"green"}
+    ],
+    [
+        {x:225,y:156,type:"green"},
+        {x:270,y:156,type:"white"},
+        {x:315,y:156,type:"white"}
+    ],
+    [
+        {x:0,y:234,type:"white"},
+        {x:45,y:234,type:"yellow"},
+        {x:90,y:234,type:"red"},
+        {x:135,y:234,type:"blue"},
+        {x:180,y:234,type:"roundabout"},
+        {x:225,y:234,type:"purple"},
+        {x:270,y:234,type:"white"},
+        {x:315,y:234,type:"red"}
+    ],
+    [
+        {x:0,y:312,type:"blue"},
+        {x:180,y:312,type:"black"},
+        {x:270,y:312,type:"white"},
+        {x:315,y:312,type:"white"}
+    ], 
+    [
+        {x:0,y:390,type:"purple"},
+        {x:180,y:390,type:"orange"},
+        {x:270,y:390,type:"white"},
+        {x:315,y:390,type:"white"}
+    ], 
+    [
+        {x:0,y:468,type:"purple"},
+        {x:45,y:468,type:"white"},
+        {x:90,y:468,type:"green"},
+        {x:135,y:468,type:"black"},
+        {x:180,y:468,type:"yellow"},
+        {x:225,y:468,type:"black"},
+        {x:270,y:468,type:"red"},
+        {x:315,y:468,type:"white"}
+    ], 
+    [
+        {x:0,y:546,type:"end"},
+        {x:0,y:546,type:"white"},
+        {x:0,y:546,type:"yellow"},
+    ], 
+    [
+        {x:45,y:624,type:"black"},
+        {x:90,y:624,type:"orange"},
+        {x:135,y:624,type:"white"},
+        {x:180,y:624,type:"black"},
+        {x:225,y:624,type:"purple"},
+        {x:270,y:624,type:"red"},
+        {x:315,y:624,type:"blue"},
+    ]
+]
 
 // Player Pieces 
 
