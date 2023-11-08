@@ -68,6 +68,10 @@ const Spaces = [
         {x:315,y:0,type:"white"}
     ],
     [
+        {},
+        {},
+        {},
+        {},
         {x:225,y:78,type:"black"},
         {x:270,y:78,type:"orange"},
         {x:315,y:78,type:"green"}
@@ -187,17 +191,24 @@ function keyDownMethods(e) {
 function move(player, spaces) {
     let currentSpace = player.currentSpace;
     let newSpace = [player.currentSpace[0], player.currentSpace[1] + spaces];
-    let spaceExists = indexExists(newSpace[0], newSpace[1])
+    let spaceExists = !indexExists(newSpace[0], newSpace[1])
     console.log(`Space Exists? ${spaceExists}`);
-    if (!spaceExists) {
+    if (spaceExists) {
         let dx = getSpace(newSpace).x - player.spaceObj.x;
         let dy = 0;
         player.move(dx, dy)
         player.currentSpace = newSpace;
         player.spaceObj = getSpace(newSpace);
         checkSpaceType(newSpace.type);
+    } else {
+        let dx = 0;
+        let newSpace = [currentSpace[0] + 1, currentSpace[1]];
+        let dy = getSpace(newSpace).y - player.spaceObj.y;
+        player.move(dx, dy);
+        player.currentSpace = newSpace;
+        player.spaceObj = getSpace(newSpace);
+        console.log(player.spaceObj);
     }
-    console.log(`${indexExists(newSpace[0], newSpace[1])}`);
 }
 
 function checkSpaceType(type) {
