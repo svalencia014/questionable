@@ -1,13 +1,3 @@
-//* DO NOT PUT ON CODEHS
-import { Graphics, Rectangle } from 'chs-js-lib'
-const graphics = new Graphics();
-function add(shape) {
-  graphics.add(shape);
-}
-function remove(shape) {
-  graphics.remove(shape);
-}
-//* END DO NOT PUT ON CODEHS
 /*
 // Create a variable to store the person who landed on the square
 var personOnSquare;
