@@ -63,11 +63,12 @@ const Spaces = [
         {x:90,y:0,type:"green"},
         {x:135,y:0,type:"purple"},
         {x:180,y:0,type:"black"},
-        {x:225,y:0,type:"yellow"},
-        {x:270,y:0,type:"white"},
-        {x:315,y:0,type:"white"}
+        {x:225,y:0,type:"yellow", choice: true},
+        {x:270,y:0,type:"white", choice: true},
+        {x:315,y:0,type:"white", choice: true}
     ],
     [
+        {},
         {},
         {},
         {},
@@ -77,6 +78,11 @@ const Spaces = [
         {x:315,y:78,type:"green"}
     ],
     [
+        {},
+        {},
+        {},
+        {},
+        {},
         {x:225,y:156,type:"green"},
         {x:270,y:156,type:"white"},
         {x:315,y:156,type:"white"}
@@ -92,12 +98,19 @@ const Spaces = [
         {x:315,y:234,type:"red"}
     ],
     [
+        {},
+        {},
+        {},
+        {},
         {x:0,y:312,type:"blue"},
         {x:180,y:312,type:"black"},
         {x:270,y:312,type:"white"},
         {x:315,y:312,type:"white"}
     ], 
     [
+        {},
+        {},
+        {},
         {x:0,y:390,type:"purple"},
         {x:180,y:390,type:"orange"},
         {x:270,y:390,type:"white"},
@@ -114,6 +127,10 @@ const Spaces = [
         {x:315,y:468,type:"white"}
     ], 
     [
+        {},
+        {},
+        {},
+        {},
         {x:0,y:546,type:"end"},
         {x:0,y:546,type:"white"},
         {x:0,y:546,type:"yellow"},
@@ -203,7 +220,14 @@ function move(player, spaces) {
     } else {
         let dx = 0;
         let newSpace = [currentSpace[0] + 1, currentSpace[1]];
+        console.log(getSpace(newSpace));
+        if (newSpace.valueOf.length == 0 || newSpace == undefined) {
+            console.error("FATAL ERROR: Please try again");
+            prompt("FATAL ERROR: Please try again");
+            return;
+        }
         let dy = getSpace(newSpace).y - player.spaceObj.y;
+        console.log(dy);
         player.move(dx, dy);
         player.currentSpace = newSpace;
         player.spaceObj = getSpace(newSpace);
