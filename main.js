@@ -207,43 +207,34 @@ function keyDownMethods(e) {
 
 function move(player, spaces) {
     let currentSpace = player.currentSpace;
-    let newSpace = [player.currentSpace[0], player.currentSpace[1] + spaces];
-    let spaceExists = !indexExists(newSpace[0], newSpace[1])
-    console.log(`Space Exists? ${spaceExists}`);
-    if (spaceExists) {
-        let dx = getSpace(newSpace).x - player.spaceObj.x;
-        let dy = 0;
-        player.move(dx, dy)
-        player.currentSpace = newSpace;
-        player.spaceObj = getSpace(newSpace);
-        checkSpaceType(newSpace.type);
-    } else {
-        let dx = 0;
-        let newSpace = [currentSpace[0] + 1, currentSpace[1]];
-        console.log(getSpace(newSpace));
-        if (newSpace.valueOf.length == 0 || newSpace == undefined) {
-            console.error("FATAL ERROR: Please try again");
-            prompt("FATAL ERROR: Please try again");
-            return;
+    for (let i = 0; i < spaces; i++) {
+        let newSpace = [player.currentSpace[0], player.currentSpace[1] + 1];
+        let spaceExists = !indexExists(newSpace[0], newSpace[1]);
+        if (spaceExists) {
+            let dx = getSpace(newSpace).x - player.spaceObj.x;
+            player.move(dx, 0);
+            player.currentSpace = newSpace;
+            player.spaceObj = getSpace(newSpace);
+            console.log(player.spaceObj);
+            if (player.spaceObj.choice == true) {
+                prompt(`You landed on a ${player.spaceObj.type} choice square! Choose 1 to go straight or 2 to turn!`)
+            }
         }
-        let dy = getSpace(newSpace).y - player.spaceObj.y;
-        console.log(dy);
-        player.move(dx, dy);
-        player.currentSpace = newSpace;
-        player.spaceObj = getSpace(newSpace);
-        console.log(player.spaceObj);
     }
+    checkSpaceType(player.spaceObj.type);
 }
 
 function checkSpaceType(type) {
     switch(type) {
         case "purple": {
             //duel square
+            console.log(`${activePlayer} landed on a duel square!`)
             break;
         }
         
         case "green": {
             //+2 spaces
+            console.log(`${activePlayer} landed on a green square!`)
             break;
         }
         
@@ -408,7 +399,6 @@ function rollDice() {
 } 
 
 function indexExists(row, column) {
-    console.log(row, column)
     return (
         row < 0 || 
         row >= Spaces.length ||
