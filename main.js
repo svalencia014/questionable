@@ -1,54 +1,3 @@
-/*
-// Create a variable to store the person who landed on the square
-var personOnSquare;
-
-// Create a variable to store the opponent who was chosen
-var opponent;
-
-// Create a variable to store the die roll of the first person
-var firstRoll;
-
-// Create a variable to store the die roll of the second person
-var secondRoll;
-
-// Prompt the person who landed on the square to choose an opponent
-if checkSpaceType(purple)personOnSquare = prompt("Choose an opponent: ");
-
-// Get the die roll of the first person
-firstRoll = Math.floor(Math.random() * 6) + 1;
-
-// Get the die roll of the second person
-secondRoll = Math.floor(Math.random() * 6) + 1;
-
-// Compare the die rolls to see who wins the duel
-if (firstRoll > secondRoll) {
-   The first person wins the duel
-  alert("The first person wins the duel and gets to move forward two spaces.");
-   Move the first person forward two spaces
-   ...
-} else if (firstRoll < secondRoll) {
-   The second person wins the duel
-  alert("The second person wins the duel and gets to move forward two spaces.");
-   Move the second person forward two spaces
-   ...
-} else {
-   The die rolls are tied
-  alert("The die rolls are tied, so the duel is a draw.");
-}
-
-function checkGreenSquare(currentPosition) {
-  // Get the color of the square at the current position
-  const squareColor = getSquareColor(currentPosition);
-
-  // Check if the square is green
-  if (squareColor === Color.GREEN) {
-    // Move the player two spaces forward
-    move(Player) += 2;
-  }
-
-  return currentPosition;
-}*/
-
 const Theme = new Audio(
     "https://codehs.com/uploads/fcd293c3d1c92b0a954da56bb3d4f6"
 );
@@ -98,12 +47,12 @@ const Spaces = [
         {x:315,y:234,type:"red"}
     ],
     [
-        {},
-        {},
-        {},
-        {},
         {x:0,y:312,type:"blue"},
+        {},
+        {},
+        {},
         {x:180,y:312,type:"black"},
+        {},
         {x:270,y:312,type:"white"},
         {x:315,y:312,type:"white"}
     ], 
@@ -145,6 +94,8 @@ const Spaces = [
         {x:315,y:624,type:"blue"},
     ]
 ]
+
+const HorizontalRows = [0,3,6,8]
 
 // Player Pieces 
 
@@ -206,22 +157,76 @@ function keyDownMethods(e) {
 }
 
 function move(player, spaces) {
-    let currentSpace = player.currentSpace;
     for (let i = 0; i < spaces; i++) {
-        let newSpace = [player.currentSpace[0], player.currentSpace[1] + 1];
-        let spaceExists = !indexExists(newSpace[0], newSpace[1]);
-        if (spaceExists) {
-            let dx = getSpace(newSpace).x - player.spaceObj.x;
-            player.move(dx, 0);
-            player.currentSpace = newSpace;
-            player.spaceObj = getSpace(newSpace);
-            console.log(player.spaceObj);
-            if (player.spaceObj.choice == true) {
-                prompt(`You landed on a ${player.spaceObj.type} choice square! Choose 1 to go straight or 2 to turn!`)
+        console.log(player.choice)
+        if (player.choice == undefined) {
+            if (HorizontalRows.indexOf(player.currentSpace[0]) == -1) {
+                //* Move vertically
+                let newSpace = [player.currentSpace[0] + 1, player.currentSpace[1]];
+                let spaceExists = !indexExists(newSpace[0], newSpace[1]);
+                if (spaceExists) {
+                    let dy = getSpace(newSpace).y - player.spaceObj.y;
+                    player.move(0, dy);
+                    player.currentSpace = newSpace;
+                    player.spaceObj = getSpace(newSpace);
+                    console.log(player.spaceObj);
+                    if (player.spaceObj.choice == true) {
+                        player.choice = readInt(`${activePlayer} landed on a ${player.spaceObj.type} choice square! Choose 1 to go straight or 2 to turn!`)
+                    }
+                }
+            } else {
+                //* Move horizontally
+                let newSpace = [player.currentSpace[0], player.currentSpace[1] + 1];
+                let spaceExists = !indexExists(newSpace[0], newSpace[1]);
+                if (spaceExists) {
+                    let dx = getSpace(newSpace).x - player.spaceObj.x;
+                    player.move(dx, 0);
+                    player.currentSpace = newSpace;
+                    player.spaceObj = getSpace(newSpace);
+                    if (player.spaceObj.choice == true) {
+                        player.choice = readInt(`${activePlayer} landed on a ${player.spaceObj.type} choice square! Choose 1 to go straight or 2 to turn!`)
+                    }
+                }
+            }
+        } else {
+            if (player.choice == 1) {
+                //*Should move horizontally
+                player.choice == undefined;
+                let newSpace = [player.currentSpace[0], player.currentSpace[1] + 1];
+                let spaceExists = !indexExists(newSpace[0], newSpace[1]);
+                if (spaceExists) {
+                    let dx = getSpace(newSpace).x - player.spaceObj.x;
+                    player.move(dx, 0);
+                    player.currentSpace = newSpace;
+                    player.spaceObj = getSpace(newSpace);
+                    if (player.spaceObj.choice == true) {
+                        player.choice = readInt(`${activePlayer} landed on a ${player.spaceObj.type} choice square! Choose 1 to go straight or 2 to turn!`)
+                    }
+                }
+            } else if (player.choice == 2) {
+                //*Should move vertically
+                player.choice == undefined;
+                let newSpace = [player.currentSpace[0] + 1, player.currentSpace[1]];
+                let spaceExists = !indexExists(newSpace[0], newSpace[1]);
+                if (spaceExists) {
+                    let dy = getSpace(newSpace).y - player.spaceObj.y;
+                    player.move(0, dy);
+                    player.currentSpace = newSpace;
+                    player.spaceObj = getSpace(newSpace);
+                    console.log(player.spaceObj);
+                    if (player.spaceObj.choice == true) {
+                        player.choice = readInt(`${activePlayer} landed on a ${player.spaceObj.type} choice square! Choose 1 to go straight or 2 to turn!`)
+                    }
+                }
+            } else {
+                while (player.choice != 1 && player.choice != 2) {
+                    console.log("Error: choice is not 1 or 2")
+                    player.choice = readInt(`PICK A NUMBER BETWEEN 1 AND 2`)
+                }
             }
         }
+        checkSpaceType(player.spaceObj.type);
     }
-    checkSpaceType(player.spaceObj.type);
 }
 
 function checkSpaceType(type) {
