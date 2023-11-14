@@ -42,7 +42,7 @@ const Spaces = [
         {x:90,y:234,type:"red"},
         {x:135,y:234,type:"blue"},
         {x:180,y:234,type:"roundabout"},
-        {x:225,y:234,type:"purple"},
+        {x:225,y:234,type:"purple", turn: "right"},
         {x:270,y:234,type:"white"},
         {x:315,y:234,type:"red"}
     ],
@@ -161,21 +161,29 @@ function move(player, spaces) {
         console.log(player.choice)
         if (player.choice == undefined) {
             if (HorizontalRows.indexOf(player.currentSpace[0]) == -1) {
-                //* Move vertically
-                let newSpace = [player.currentSpace[0] + 1, player.currentSpace[1]];
-                let spaceExists = !indexExists(newSpace[0], newSpace[1]);
-                if (spaceExists) {
-                    let dy = getSpace(newSpace).y - player.spaceObj.y;
-                    player.move(0, dy);
-                    player.currentSpace = newSpace;
-                    player.spaceObj = getSpace(newSpace);
-                    console.log(player.spaceObj);
-                    if (player.spaceObj.choice == true) {
-                        player.choice = readInt(`${activePlayer} landed on a ${player.spaceObj.type} choice square! Choose 1 to go straight or 2 to turn!`)
+                //* Player should move vertically
+                if (player.direction == "up") {
+                    //Move player up
+                } else {
+                    //Move player down
+                    let newSpace = [player.currentSpace[0] + 1, player.currentSpace[1]];
+                    let spaceExists = !indexExists(newSpace[0], newSpace[1]);
+                    if (spaceExists) {
+                        let dy = getSpace(newSpace).y - player.spaceObj.y;
+                        player.move(0, dy);
+                        player.currentSpace = newSpace;
+                        player.spaceObj = getSpace(newSpace);
+                        console.log(player.spaceObj);
+                        if (player.spaceObj.choice == true) {
+                            player.choice = readInt(`${activePlayer} landed on a ${player.spaceObj.type} choice square! Choose 1 to go straight or 2 to turn!`)
+                        }
                     }
                 }
             } else {
                 //* Move horizontally
+                if (player.spaceObj.turn == "right") {
+                    //move player left
+                }
                 let newSpace = [player.currentSpace[0], player.currentSpace[1] + 1];
                 let spaceExists = !indexExists(newSpace[0], newSpace[1]);
                 if (spaceExists) {
@@ -190,8 +198,11 @@ function move(player, spaces) {
             }
         } else {
             if (player.choice == 1) {
-                //*Should move horizontally
+                //*Player should move horizontally
                 player.choice == undefined;
+                if (player.direction == "down") {
+                    //move player left
+                }
                 let newSpace = [player.currentSpace[0], player.currentSpace[1] + 1];
                 let spaceExists = !indexExists(newSpace[0], newSpace[1]);
                 if (spaceExists) {
