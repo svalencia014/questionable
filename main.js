@@ -1,9 +1,6 @@
-const Theme = new Audio(
-    "https://codehs.com/uploads/fcd293c3d1c92b0a954da56bb3d4f6"
-);
-const BlackSquareTheme = new Audio(
-    "https://codehs.com/uploads/66c5a8add52d0a2422190b248cf1355d"
-);
+const Theme = new Audio("https://codehs.com/uploads/4be7bd42f6caabe5f533996c3eff4621");
+const BlackSquareTheme = new Audio("https://codehs.com/uploads/66c5a8add52d0a2422190b248cf1355d");
+const FireBurn = new Audio("https://codehs.com/uploads/7d4fd881433312af6bacac8a5b2d4065");
 //{ x, y, type }
 const Spaces = [
     [
@@ -61,7 +58,7 @@ const Spaces = [
         {},
         {},
         {x:0,y:390,type:"purple"},
-        {x:180,y:390,type:"orange"},
+        {x:180,y:390,type:"orange"}, 
         {x:270,y:390,type:"white"},
         {x:315,y:390,type:"white"}
     ], 
@@ -164,6 +161,18 @@ function move(player, spaces) {
                 //* Player should move vertically
                 if (player.direction == "up") {
                     //Move player up
+                    let newSpace = [player.currentSpace[0] - 1, player.currentSpace[1]];
+                    let spaceExists = !indexExists(newSpace[0], newSpace[1]);
+                    if (spaceExists) {
+                        let dy = getSpace(newSpace).y + player.spaceObj.y;
+                        player.move(0, dy);
+                        plater.currentSpace = newSpace;
+                        player.spaceObj = getSpace(newSpace);
+                        console.log(player.spaceObj);
+                        if (player.spaceObj.choice == true) {
+                            player.choice = readInt(`${activePlayer} landed on a ${player.spaceObj.type} choice square! Choose 1 to go straight or 2 to turn!`)
+                        }
+                    }
                 } else {
                     //Move player down
                     let newSpace = [player.currentSpace[0] + 1, player.currentSpace[1]];
@@ -295,7 +304,8 @@ function setNextPlayer() {
 }
 
 function setupGame() {
-    //setTimer(() => { MenuTheme.play() }, 85, "", "Music Timer")
+    Theme.play();
+    Theme.loop=true;
     //* DRAW GRID
     DiceText.setPosition(25, 155),
     EnterText.setPosition(25, 175);
@@ -328,7 +338,7 @@ function setupPlayer(player, offset = 0) {
 function getSpace(location) {
     return Spaces[location[0]][location[1]]
 }
-
+//game board
 function drawBoard() {
     const roundAbout = new WebImage("https://codehs.com/uploads/e00286aeb2d6b739a08e9a0b67a53168")
     setSize(355, 700);
@@ -390,7 +400,7 @@ function drawBoard() {
     drawSquare(Color.BLACK, 225, 468);
     drawSquare(Color.ORANGE, 180, 390);
     drawSquare(Color.BLACK, 180, 312);
-    
+//game board
 }
 
 function drawSquare(color, x, y, text = "", font = "") {
